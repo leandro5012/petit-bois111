@@ -125,11 +125,14 @@
             const rayon = (diametre / 100) / 2; // Conversion cm -> m
             const volumeReel = Math.PI * Math.pow(rayon, 2) * hauteur * fourches;
 
+            // Application de la densité et de l'humidité
+            const volumeAjuste = volumeReel * densite * humidite;
+
             // Taux d'air automatique entre 25% et 30%
             const tauxAir = (Math.random() * 0.05) + 0.25;
 
-            // Calcul du volume en stères
-            const volumeSteres = volumeReel * (densite * (1 - tauxAir)) * humidite;
+            // Calcul du volume en stères après ajustement du taux d'air
+            const volumeSteres = volumeAjuste / (1 - tauxAir);
 
             // Affichage du résultat
             document.getElementById('resultatVolume').innerText = 
