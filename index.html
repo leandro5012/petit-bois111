@@ -131,6 +131,7 @@
             // Calcul du volume en stères
             const volumeSteres = volumeReel * (densite * (1 - tauxAir)) * humidite;
 
+            // Affichage du résultat
             document.getElementById('resultatVolume').innerText = 
                 `Volume réel : ${volumeReel.toFixed(2)} m³\n` +
                 `Volume en stères : ${volumeSteres.toFixed(2)}`;
