@@ -128,12 +128,12 @@
             const rayon = (diametre / 100) / 2;
             const volume = Math.PI * Math.pow(rayon, 2) * hauteur * fourches;
 
-            // Prendre en compte le taux d'air dans le stère
-            const volumeSteres = volume * densite * humidite * (1 - tauxAir);
+            // Calcul du volume en stères (plus grand que le volume réel)
+            const volumeSteres = volume / (densite * (1 - tauxAir)) * humidite;
 
             document.getElementById('resultatVolume').innerText = 
-                `Volume : ${volume.toFixed(2)} m³\n` +
-                `En stères (après ajustement du taux d'air) : ${volumeSteres.toFixed(2)}`;
+                `Volume réel : ${volume.toFixed(2)} m³\n` +
+                `Volume en stères : ${volumeSteres.toFixed(2)}`;
 
             document.getElementById('resultat').style.display = 'block';
         }
