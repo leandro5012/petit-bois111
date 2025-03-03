@@ -17,13 +17,13 @@
     <h1>Calcul de Stères de Bois</h1>
 
     <label for="hauteur">Hauteur de l'arbre (m) :</label>
-    <input type="number" id="hauteur" placeholder="Hauteur en mètres" required>
+    <input type="number" id="hauteur" placeholder="Hauteur en mètres" min="0" step="0.1" required>
 
     <label for="diametre">Diamètre de l'arbre (cm) :</label>
-    <input type="number" id="diametre" placeholder="Diamètre en centimètres" required>
+    <input type="number" id="diametre" placeholder="Diamètre en centimètres" min="0" step="0.1" required>
 
     <label for="fourches">Nombre de fourches (mettre 0 si tout droit) :</label>
-    <input type="number" id="fourches" value="0" min="0" required>
+    <input type="number" id="fourches" value="0" min="0" step="1" required>
 
     <label for="typeBois">Type de bois :</label>
     <select id="typeBois" required>
@@ -49,11 +49,19 @@
 
     <script>
         function calculerVolume() {
+            // Récupération et validation des données
             const hauteur = parseFloat(document.getElementById("hauteur").value);
-            const diametre = parseFloat(document.getElementById("diametre").value) / 100; // conversion en mètres
+            const diametre = parseFloat(document.getElementById("diametre").value) / 100; // Conversion en mètres
             let fourches = parseInt(document.getElementById("fourches").value);
             const densite = parseFloat(document.getElementById("typeBois").value);
             const humidite = parseFloat(document.getElementById("humidite").value);
+
+            // Validation des entrées utilisateur
+            if (isNaN(hauteur) || isNaN(diametre) || isNaN(fourches) || isNaN(densite) || isNaN(humidite) || 
+                hauteur <= 0 || diametre <= 0 || fourches < 0) {
+                alert("Veuillez remplir tous les champs correctement avec des valeurs positives.");
+                return;
+            }
 
             // Si le nombre de fourches est 0, on considère un tronc droit (équivalent à 1 pour le calcul)
             if (fourches === 0) {
