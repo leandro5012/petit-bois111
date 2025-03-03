@@ -15,7 +15,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
         }
         .container {
             background-color: white;
@@ -64,13 +64,13 @@
 
         <form id="boisForm">
             <label for="hauteur">Hauteur de l'arbre (m) :</label>
-            <input type="number" id="hauteur" placeholder="Ex : 5.2" required>
+            <input type="number" id="hauteur" placeholder="Ex : 5.2" step="0.1" required>
 
-            <label for="diametre">Diamètre (cm) :</label>
-            <input type="number" id="diametre" placeholder="Ex : 30" required>
+            <label for="diametre">Diamètre de l'arbre (cm) :</label>
+            <input type="number" id="diametre" placeholder="Ex : 30" step="0.1" required>
 
             <label for="fourches">Nombre de fourches :</label>
-            <input type="number" id="fourches" placeholder="Ex : 2" value="1" required>
+            <input type="number" id="fourches" placeholder="Ex : 1" value="1" min="1" required>
 
             <label for="typeBois">Type de bois :</label>
             <select id="typeBois" required>
@@ -99,9 +99,6 @@
                 <option value="1.2">Humide (ajoute 20%)</option>
             </select>
 
-            <label for="tauxAir">Taux d'air dans le stère (%) :</label>
-            <input type="number" id="tauxAir" placeholder="Ex : 25" value="25" required>
-
             <button type="button" onclick="calculerVolume()">Calculer</button>
         </form>
 
@@ -118,25 +115,12 @@
             const fourches = Math.max(parseInt(document.getElementById('fourches').value), 1);
             const densite = parseFloat(document.getElementById('typeBois').value);
             const humidite = parseFloat(document.getElementById('humidite').value);
-            const tauxAir = parseFloat(document.getElementById('tauxAir').value) / 100;
 
-            if (isNaN(hauteur) || isNaN(diametre) || isNaN(fourches) || isNaN(densite) || isNaN(humidite) || isNaN(tauxAir)) {
+            if (isNaN(hauteur) || isNaN(diametre) || isNaN(fourches) || isNaN(densite) || isNaN(humidite)) {
                 alert("Veuillez remplir tous les champs correctement.");
                 return;
             }
 
-            const rayon = (diametre / 100) / 2;
-            const volume = Math.PI * Math.pow(rayon, 2) * hauteur * fourches;
-
-            // Calcul du volume en stères (plus grand que le volume réel)
-            const volumeSteres = volume / (densite * (1 - tauxAir)) * humidite;
-
-            document.getElementById('resultatVolume').innerText = 
-                `Volume réel : ${volume.toFixed(2)} m³\n` +
-                `Volume en stères : ${volumeSteres.toFixed(2)}`;
-
-            document.getElementById('resultat').style.display = 'block';
-        }
-    </script>
-</body>
-</html>
+            // Calcul du volume réel en m³
+            const rayon = (diametre / 100) / 2; // Conversion cm -> m
+            const volumeReel = Math.PI * Math.pow(rayon, 2) * hauteur * fou
