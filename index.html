@@ -96,9 +96,10 @@
 
             // Volume de la bille (tronc conique tronqué)
             const volumeBille = (Math.PI * hauteurBille / 12) * 
-                                 (Math.pow(diametreBas, 2) + Math.pow(diametreHaut, 2) + (diametreBas * diametreHaut));
+                                 (Math.pow(diametreBas, 2) + Math.pow(diametreHaut, 2) + 
+                                 diametreBas * diametreHaut);
 
-            // Volume du branchage (cylindre)
+            // Volume du branchage (cylindre plein)
             const volumeBranchage = Math.PI * Math.pow(diametreMoyenBranchage / 2, 2) * hauteurBranchage;
 
             // Ajustement avec densité et humidité
