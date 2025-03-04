@@ -22,7 +22,7 @@
     <label for="diametre">Diamètre de l'arbre (cm) :</label>
     <input type="number" id="diametre" placeholder="Diamètre en centimètres" min="0" step="0.1" required>
 
-    <label for="fourches">Nombre de fourches (mettre 0 si tout droit) :</label>
+    <label for="fourches">Nombre de fourches (mettre 1 si tout droit) :</label>
     <input type="number" id="fourches" value="0" min="0" step="1" required>
 
     <label for="typeBois">Type de bois :</label>
@@ -49,44 +49,64 @@
 
     <script>
         function calculerVolume() {
-            // Récupération et validation des données
             const hauteur = parseFloat(document.getElementById("hauteur").value);
             const diametre = parseFloat(document.getElementById("diametre").value) / 100; // Conversion en mètres
             let fourches = parseInt(document.getElementById("fourches").value);
             const densite = parseFloat(document.getElementById("typeBois").value);
             const humidite = parseFloat(document.getElementById("humidite").value);
 
-            // Validation des entrées utilisateur
             if (isNaN(hauteur) || isNaN(diametre) || isNaN(fourches) || isNaN(densite) || isNaN(humidite) || 
                 hauteur <= 0 || diametre <= 0 || fourches < 0) {
                 alert("Veuillez remplir tous les champs correctement avec des valeurs positives.");
                 return;
             }
 
-            // Si le nombre de fourches est 0, on considère un tronc droit (équivalent à 1 pour le calcul)
             if (fourches === 0) {
                 fourches = 1;
             }
 
-            // Calcul du volume réel de l'arbre en m³ (cylindre)
             const volumeReel = Math.PI * Math.pow(diametre / 2, 2) * hauteur * fourches;
-
-            // Ajustement avec la densité du bois et l'humidité
             const volumeAjuste = volumeReel * densite * humidite;
-
-            // Taux d'air fixé à 25% (0.25)
             const tauxAir = 0.25;
             const volumeSteres = volumeAjuste / (1 - tauxAir);
 
-            // Affichage du résultat
             document.getElementById("resultat").innerHTML = `
                 <h2>Résultat</h2>
                 <p>Volume réel : ${volumeReel.toFixed(2)} m³</p>
                 <p>Volume en stères : ${volumeSteres.toFixed(2)}</p>
-            `,
+            `;
         }
+
+        window.onload = function() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            function jouerNote(frequence, duree, tempsDepart = 0) {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(frequence, audioCtx.currentTime + tempsDepart);
+                
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime + tempsDepart);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + tempsDepart + duree);
+
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc.start(audioCtx.currentTime + tempsDepart);
+                osc.stop(audioCtx.currentTime + tempsDepart + duree);
+            }
+
+            function boucleMusicale() {
+                const interval = 2; // Intervalle en secondes pour la boucle
+                jouerNote(440, 0.5, 0);  // Note A (440 Hz) immédiatement
+                jouerNote(523.25, 0.5, 1); // Note C (523.25 Hz) après 1 seconde
+                
+                setTimeout(boucleMusicale, interval * 1000);
+            }
+
+            boucleMusicale();
+        };
     </script>
 </body>
 </html>
-
-        
