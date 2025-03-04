@@ -102,14 +102,11 @@
             // Volume du branchage (cône)
             const volumeBranchage = (Math.PI * Math.pow(diametreMoyenBranchage / 2, 2) * hauteurBranchage) / 3;
 
-            // Ajustement avec densité et humidité
-            const volumeAjusteBille = volumeBille * densite * humidite;
-            const volumeAjusteBranchage = volumeBranchage * densite * humidite;
-
-            // Prendre en compte le taux d'air (25%)
+            // Ajustement avec densité, humidité et prise en compte du taux d'air (25%)
             const tauxAir = 0.25;
-            const volumeSteresBille = volumeAjusteBille / (1 - tauxAir);
-            const volumeSteresBranchage = volumeAjusteBranchage / (1 - tauxAir);
+            
+            const volumeSteresBille = (volumeBille * densite * humidite) / (1 - tauxAir);
+            const volumeSteresBranchage = (volumeBranchage * densite * humidite) / (1 - tauxAir);
             const volumeSteresTotal = volumeSteresBille + volumeSteresBranchage;
 
             document.getElementById("resultat").innerHTML = `
