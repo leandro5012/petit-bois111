@@ -12,7 +12,7 @@
             background-color: #e8f5e9; 
             color: #2e7d32; 
         }
-        h1 { color: #1b5e20; }
+        h1, h2 { color: #1b5e20; }
         input, select { 
             width: 100%; 
             padding: 10px; 
@@ -78,30 +78,6 @@
         <label for="diametreHaut">Diamètre en haut de la bille (cm) :</label>
         <input type="number" id="diametreHaut" placeholder="Diamètre en cm" min="0" step="0.1" required>
 
-        <label for="hauteurBranchage">Hauteur du branchage (m) :</label>
-        <input type="number" id="hauteurBranchage" placeholder="Hauteur en mètres" min="0" step="0.1" required>
-
-        <label for="diametreMoyenBranchage">Diamètre moyen du branchage (cm) :</label>
-        <input type="number" id="diametreMoyenBranchage" placeholder="Diamètre moyen en cm" min="0" step="0.1" required>
-
-        <label for="typeBois">Type de bois :</label>
-        <select id="typeBois" required>
-            <option value="0.75">Chêne</option>
-            <option value="0.72">Hêtre</option>
-            <option value="0.55">Pin</option>
-            <option value="0.45">Sapin</option>
-            <option value="0.40">Peuplier</option>
-            <option value="0.50">Cèdre</option>
-            <option value="0.65">Érable</option>
-            <option value="0.60">Merisier</option>
-        </select>
-
-        <label for="humidite">Bois sec ou humide :</label>
-        <select id="humidite" required>
-            <option value="1">Sec</option>
-            <option value="1.2">Humide (ajoute 20%)</option>
-        </select>
-
         <button onclick="calculerVolumeVente()">Calculer</button>
         <div class="result" id="resultatVente"></div>
     </div>
@@ -121,6 +97,7 @@
             <option value="0.75">Chêne</option>
             <option value="0.72">Hêtre</option>
             <option value="0.55">Pin</option>
+            <option value="0.45">Sapin</option>
         </select>
 
         <label for="humiditeChauffage">Bois sec ou humide :</label>
@@ -142,18 +119,34 @@
         function calculerVolumeVente() {
             const hauteurBille = parseFloat(document.getElementById("hauteurBille").value);
             const diametreBas = parseFloat(document.getElementById("diametreBas").value) / 100;
-            const volumeBille = (Math.PI * hauteurBille / 12) * (Math.pow(diametreBas, 2));
+            const diametreHaut = parseFloat(document.getElementById("diametreHaut").value) / 100;
+
+            const volumeBille = (Math.PI * hauteurBille / 12) * 
+                                 (Math.pow(diametreBas, 2) + Math.pow(diametreHaut, 2) + 
+                                 diametreBas * diametreHaut);
+
             document.getElementById("resultatVente").innerHTML = `
-                <p>Volume bille : ${volumeBille.toFixed(2)} m³</p>
+                <p>Volume de la bille : ${volumeBille.toFixed(2)} m³</p>
             `;
         }
 
         function calculerVolumeChauffage() {
             const hauteurArbre = parseFloat(document.getElementById("hauteurArbre").value);
             const diametreArbre = parseFloat(document.getElementById("diametreArbre").value) / 100;
+            const densite = parseFloat(document.getElementById("typeBoisChauffage").value);
+            const humidite = parseFloat(document.getElementById("humiditeChauffage").value);
+
+            // Volume de l'arbre (cylindre plein)
             const volumeArbre = Math.PI * Math.pow(diametreArbre / 2, 2) * hauteurArbre;
+
+            // Volume ajusté avec densité, humidité et taux d'air (25%)
+            const tauxAir = 0.25;
+            const volumeAjuste = volumeArbre * densite * humidite;
+            const volumeSteres = volumeAjuste / (1 - tauxAir);
+
             document.getElementById("resultatChauffage").innerHTML = `
-                <p>Volume arbre : ${volumeArbre.toFixed(2)} m³</p>
+                <p>Volume de l'arbre : ${volumeArbre.toFixed(2)} m³</p>
+                <p>Volume en stères : ${volumeSteres.toFixed(2)} stères</p>
             `;
         }
     </script>
