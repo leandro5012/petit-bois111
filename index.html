@@ -8,40 +8,34 @@
         body { 
             font-family: Arial, sans-serif; 
             padding: 20px; 
-            background-color: #e8f5e9; /* Vert très clair pour l'ambiance nature */
-            color: #2e7d32; /* Texte vert foncé */
+            background-color: #e8f5e9; 
+            color: #2e7d32; 
         }
-        h1 { 
-            color: #1b5e20; /* Vert forêt foncé */
-        }
+        h1 { color: #1b5e20; }
         input, select { 
             width: 100%; 
             padding: 10px; 
             margin: 10px 0; 
-            border: 2px solid #81c784; /* Bordure vert clair */
+            border: 2px solid #81c784; 
             border-radius: 5px;
         }
         button { 
             padding: 10px 20px; 
-            background-color: #388e3c; /* Vert foncé pour le bouton */
+            background-color: #388e3c; 
             color: white; 
             border: none; 
             cursor: pointer; 
             border-radius: 5px;
         }
-        button:hover { 
-            background-color: #2e7d32; 
-        }
+        button:hover { background-color: #2e7d32; }
         .result { 
-            background-color: #c8e6c9; /* Vert pastel pour le résultat */
+            background-color: #c8e6c9; 
             padding: 20px; 
             margin-top: 20px; 
             border-radius: 5px; 
             border: 1px solid #81c784;
         }
-        label {
-            color: #2e7d32; /* Même vert foncé que le texte général */
-        }
+        label { color: #2e7d32; }
     </style>
 </head>
 <body>
@@ -108,25 +102,21 @@
             // Volume du branchage (cône)
             const volumeBranchage = (Math.PI * Math.pow(diametreMoyenBranchage / 2, 2) * hauteurBranchage) / 3;
 
-            // Volume total réel de l'arbre
-            const volumeReel = volumeBille + volumeBranchage;
-
             // Ajustement avec densité et humidité
             const volumeAjusteBille = volumeBille * densite * humidite;
             const volumeAjusteBranchage = volumeBranchage * densite * humidite;
 
-            // Taux d'air (25%)
+            // Prendre en compte le taux d'air (25%)
             const tauxAir = 0.25;
             const volumeSteresBille = volumeAjusteBille / (1 - tauxAir);
             const volumeSteresBranchage = volumeAjusteBranchage / (1 - tauxAir);
             const volumeSteresTotal = volumeSteresBille + volumeSteresBranchage;
 
-            // Affichage du résultat
             document.getElementById("resultat").innerHTML = `
                 <h2>Résultat</h2>
                 <p>Volume de la bille : ${volumeBille.toFixed(2)} m³ (${volumeSteresBille.toFixed(2)} stères)</p>
                 <p>Volume du branchage : ${volumeBranchage.toFixed(2)} m³ (${volumeSteresBranchage.toFixed(2)} stères)</p>
-                <p>Volume total réel : ${volumeReel.toFixed(2)} m³</p>
+                <p>Volume total réel : ${(volumeBille + volumeBranchage).toFixed(2)} m³</p>
                 <p>Volume total en stères : ${volumeSteresTotal.toFixed(2)} stères</p>
             `;
         }
