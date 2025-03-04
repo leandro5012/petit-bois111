@@ -94,19 +94,18 @@
                 return;
             }
 
-            // Volume de la bille (tronc conique tronqué)
             const volumeBille = (Math.PI * hauteurBille / 3) * 
                                  (Math.pow(diametreBas / 2, 2) + Math.pow(diametreHaut / 2, 2) + 
                                  (diametreBas / 2) * (diametreHaut / 2));
 
-            // Volume du branchage (cône)
             const volumeBranchage = (Math.PI * Math.pow(diametreMoyenBranchage / 2, 2) * hauteurBranchage) / 3;
 
-            // Ajustement avec densité, humidité et prise en compte du taux d'air (25%)
+            const volumeReelBille = volumeBille * densite * humidite;
+            const volumeReelBranchage = volumeBranchage * densite * humidite;
+
             const tauxAir = 0.25;
-            
-            const volumeSteresBille = (volumeBille * densite * humidite) / (1 - tauxAir);
-            const volumeSteresBranchage = (volumeBranchage * densite * humidite) / (1 - tauxAir);
+            const volumeSteresBille = volumeReelBille / (1 - tauxAir);
+            const volumeSteresBranchage = volumeReelBranchage / (1 - tauxAir);
             const volumeSteresTotal = volumeSteresBille + volumeSteresBranchage;
 
             document.getElementById("resultat").innerHTML = `
