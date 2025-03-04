@@ -5,25 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calcul de Stères de Bois</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; }
-        h1 { color: #2c3e50; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; }
-        button { padding: 10px 20px; background-color: #34495e; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #2c3e50; }
-        .result { background-color: #dff0d8; padding: 20px; margin-top: 20px; border-radius: 5px; }
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background-color: #e8f5e9; /* Vert très clair pour l'ambiance nature */
+            color: #2e7d32; /* Texte vert foncé */
+        }
+        h1 { 
+            color: #1b5e20; /* Vert forêt foncé */
+        }
+        input, select { 
+            width: 100%; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 2px solid #81c784; /* Bordure vert clair */
+            border-radius: 5px;
+        }
+        button { 
+            padding: 10px 20px; 
+            background-color: #388e3c; /* Vert foncé pour le bouton */
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 5px;
+        }
+        button:hover { 
+            background-color: #2e7d32; 
+        }
+        .result { 
+            background-color: #c8e6c9; /* Vert pastel pour le résultat */
+            padding: 20px; 
+            margin-top: 20px; 
+            border-radius: 5px; 
+            border: 1px solid #81c784;
+        }
+        label {
+            color: #2e7d32; /* Même vert foncé que le texte général */
+        }
     </style>
 </head>
 <body>
     <h1>Calcul de Stères de Bois</h1>
 
-    <label for="hauteur">Hauteur de l'arbre (m) :</label>
-    <input type="number" id="hauteur" placeholder="Hauteur en mètres" min="0" step="0.1" required>
+    <label for="hauteurBille">Hauteur de la bille (m) :</label>
+    <input type="number" id="hauteurBille" placeholder="Hauteur en mètres" min="0" step="0.1" required>
 
-    <label for="diametre">Diamètre de l'arbre (cm) :</label>
-    <input type="number" id="diametre" placeholder="Diamètre en centimètres" min="0" step="0.1" required>
+    <label for="diametreBas">Diamètre en bas de la bille (cm) :</label>
+    <input type="number" id="diametreBas" placeholder="Diamètre en cm" min="0" step="0.1" required>
 
-    <label for="fourches">Nombre de fourches (mettre 0 si tout droit) :</label>
-    <input type="number" id="fourches" value="0" min="0" step="1" required>
+    <label for="diametreHaut">Diamètre en haut de la bille (cm) :</label>
+    <input type="number" id="diametreHaut" placeholder="Diamètre en cm" min="0" step="0.1" required>
+
+    <label for="hauteurBranchage">Hauteur du branchage (m) :</label>
+    <input type="number" id="hauteurBranchage" placeholder="Hauteur en mètres" min="0" step="0.1" required>
+
+    <label for="diametreMoyenBranchage">Diamètre moyen du branchage (cm) :</label>
+    <input type="number" id="diametreMoyenBranchage" placeholder="Diamètre moyen en cm" min="0" step="0.1" required>
 
     <label for="typeBois">Type de bois :</label>
     <select id="typeBois" required>
@@ -49,40 +86,48 @@
 
     <script>
         function calculerVolume() {
-            // Récupération et validation des données
-            const hauteur = parseFloat(document.getElementById("hauteur").value);
-            const diametre = parseFloat(document.getElementById("diametre").value) / 100; // Conversion en mètres
-            let fourches = parseInt(document.getElementById("fourches").value);
+            const hauteurBille = parseFloat(document.getElementById("hauteurBille").value);
+            const diametreBas = parseFloat(document.getElementById("diametreBas").value) / 100;
+            const diametreHaut = parseFloat(document.getElementById("diametreHaut").value) / 100;
+            const hauteurBranchage = parseFloat(document.getElementById("hauteurBranchage").value);
+            const diametreMoyenBranchage = parseFloat(document.getElementById("diametreMoyenBranchage").value) / 100;
             const densite = parseFloat(document.getElementById("typeBois").value);
             const humidite = parseFloat(document.getElementById("humidite").value);
 
-            // Validation des entrées utilisateur
-            if (isNaN(hauteur) || isNaN(diametre) || isNaN(fourches) || isNaN(densite) || isNaN(humidite) || 
-                hauteur <= 0 || diametre <= 0 || fourches < 0) {
+            if ([hauteurBille, diametreBas, diametreHaut, hauteurBranchage, diametreMoyenBranchage, densite, humidite]
+                .some(val => isNaN(val) || val <= 0)) {
                 alert("Veuillez remplir tous les champs correctement avec des valeurs positives.");
                 return;
             }
 
-            // Si le nombre de fourches est 0, on considère un tronc droit (équivalent à 1 pour le calcul)
-            if (fourches === 0) {
-                fourches = 1;
-            }
+            // Volume de la bille (tronc conique tronqué)
+            const volumeBille = (Math.PI * hauteurBille / 3) * 
+                                 (Math.pow(diametreBas / 2, 2) + Math.pow(diametreHaut / 2, 2) + 
+                                 (diametreBas / 2) * (diametreHaut / 2));
 
-            // Calcul du volume réel de l'arbre en m³ (cylindre)
-            const volumeReel = Math.PI * Math.pow(diametre / 2, 2) * hauteur * fourches;
+            // Volume du branchage (cône)
+            const volumeBranchage = (Math.PI * Math.pow(diametreMoyenBranchage / 2, 2) * hauteurBranchage) / 3;
 
-            // Ajustement avec la densité du bois et l'humidité
-            const volumeAjuste = volumeReel * densite * humidite;
+            // Volume total réel de l'arbre
+            const volumeReel = volumeBille + volumeBranchage;
 
-            // Taux d'air fixé à 25% (0.25)
+            // Ajustement avec densité et humidité
+            const volumeAjusteBille = volumeBille * densite * humidite;
+            const volumeAjusteBranchage = volumeBranchage * densite * humidite;
+
+            // Taux d'air (25%)
             const tauxAir = 0.25;
-            const volumeSteres = volumeAjuste / (1 - tauxAir);
+            const volumeSteresBille = volumeAjusteBille / (1 - tauxAir);
+            const volumeSteresBranchage = volumeAjusteBranchage / (1 - tauxAir);
+            const volumeSteresTotal = volumeSteresBille + volumeSteresBranchage;
 
             // Affichage du résultat
             document.getElementById("resultat").innerHTML = `
                 <h2>Résultat</h2>
-                <p>Volume réel : ${volumeReel.toFixed(2)} m³</p>
-                <p>Volume en stères : ${volumeSteres.toFixed(2)}</p>
+                <p>Volume de la bille : ${volumeBille.toFixed(2)} m³ (${volumeSteresBille.toFixed(2)} stères)</p>
+                <p>Volume du branchage : ${volumeBranchage.toFixed(2)} m³ (${volumeSteresBranchage.toFixed(2)} stères)</p>
+                <p>Volume total réel : ${volumeReel.toFixed(2)} m³</p>
+                <p>Volume total en stères : ${volumeSteresTotal.toFixed(2)} stères</p>
             `;
         }
     </script>
