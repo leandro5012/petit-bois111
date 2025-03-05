@@ -69,13 +69,7 @@
         <label for="diametreBas">Diamètre en bas de la bille (cm) :</label>
         <input type="number" id="diametreBas" placeholder="Diamètre en cm" min="0" step="0.1" required>
 
-        <label for="hauteurBranchage">Hauteur du branchage (m) :</label>
-        <input type="number" id="hauteurBranchage" placeholder="Hauteur en mètres" min="0" step="0.1" required>
-
-        <label for="diametreMoyenBranchage">Diamètre moyen du branchage (cm) :</label>
-        <input type="number" id="diametreMoyenBranchage" placeholder="Diamètre moyen en cm" min="0" step="0.1" required>
-
-        <button onclick="calculerVolume('resultatVente')">Calculer</button>
+        <button onclick="calculerVente()">Calculer</button>
         <div class="result" id="resultatVente"></div>
     </div>
 
@@ -83,19 +77,33 @@
     <div id="section-chauffage" class="section">
         <h2>Calculer les stères pour le chauffage</h2>
 
-        <label for="hauteurBilleChauffage">Hauteur de la bille (m) :</label>
-        <input type="number" id="hauteurBilleChauffage" placeholder="Hauteur en mètres" min="0" step="0.1" required>
+        <label for="hauteurArbre">Hauteur de l'arbre (m) :</label>
+        <input type="number" id="hauteurArbre" placeholder="Hauteur en mètres" min="0" step="0.1" required>
 
-        <label for="diametreBasChauffage">Diamètre en bas de la bille (cm) :</label>
-        <input type="number" id="diametreBasChauffage" placeholder="Diamètre en cm" min="0" step="0.1" required>
+        <label for="diametreArbre">Diamètre de l'arbre (cm) :</label>
+        <input type="number" id="diametreArbre" placeholder="Diamètre en cm" min="0" step="0.1" required>
 
-        <label for="hauteurBranchageChauffage">Hauteur du branchage (m) :</label>
-        <input type="number" id="hauteurBranchageChauffage" placeholder="Hauteur en mètres" min="0" step="0.1" required>
+        <label for="typeBoisChauffage">Type de bois :</label>
+        <select id="typeBoisChauffage" required>
+            <option value="0.75">Chêne</option>
+            <option value="0.72">Hêtre</option>
+            <option value="0.65">Frêne</option>
+            <option value="0.60">Charme</option>
+            <option value="0.55">Pin</option>
+            <option value="0.50">Sapin</option>
+            <option value="0.70">Érable</option>
+            <option value="0.65">Bouleau</option>
+            <option value="0.45">Peuplier</option>
+            <option value="0.40">Saule</option>
+        </select>
 
-        <label for="diametreMoyenBranchageChauffage">Diamètre moyen du branchage (cm) :</label>
-        <input type="number" id="diametreMoyenBranchageChauffage" placeholder="Diamètre moyen en cm" min="0" step="0.1" required>
+        <label for="humiditeChauffage">Bois sec ou humide :</label>
+        <select id="humiditeChauffage" required>
+            <option value="1">Sec</option>
+            <option value="1.2">Humide (ajoute 20%)</option>
+        </select>
 
-        <button onclick="calculerVolume('resultatChauffage')">Calculer</button>
+        <button onclick="calculerChauffage()">Calculer</button>
         <div class="result" id="resultatChauffage"></div>
     </div>
 
@@ -105,26 +113,35 @@
             document.getElementById('section-' + section).classList.add('active');
         }
 
-        function calculerVolume(resultatID) {
+        function calculerVente() {
             const hauteurBille = parseFloat(document.getElementById("hauteurBille").value);
             const diametreBas = parseFloat(document.getElementById("diametreBas").value) / 100;
 
-            const hauteurBranchage = parseFloat(document.getElementById("hauteurBranchage").value);
-            const diametreMoyenBranchage = parseFloat(document.getElementById("diametreMoyenBranchage").value) / 100;
-
             const volumeBille = Math.PI * Math.pow(diametreBas / 2, 2) * hauteurBille;
-            const volumeBranchage = (1 / 3) * Math.PI * Math.pow(diametreMoyenBranchage / 2, 2) * hauteurBranchage;
-
             const steresBille = volumeBille / 0.75;
-            const steresBranchage = volumeBranchage / 0.75;
 
-            document.getElementById(resultatID).innerHTML = `
-                <p>Volume brut : ${(volumeBille + volumeBranchage).toFixed(2)} m³</p>
+            document.getElementById("resultatVente").innerHTML = `
                 <p>Volume de la bille : ${volumeBille.toFixed(2)} m³</p>
                 <p>Stères de la bille : ${steresBille.toFixed(2)} stères</p>
-                <p>Volume du branchage : ${volumeBranchage.toFixed(2)} m³</p>
-                <p>Stères du branchage : ${steresBranchage.toFixed(2)} stères</p>
-                <p>Total en stères : ${(steresBille + steresBranchage).toFixed(2)} stères</p>
+            `;
+        }
+
+        function calculerChauffage() {
+            const hauteurArbre = parseFloat(document.getElementById("hauteurArbre").value);
+            const diametreArbre = parseFloat(document.getElementById("diametreArbre").value) / 100;
+
+            const densite = parseFloat(document.getElementById("typeBoisChauffage").value);
+            const humidite = parseFloat(document.getElementById("humiditeChauffage").value);
+
+            const volumeBrut = Math.PI * Math.pow(diametreArbre / 2, 2) * hauteurArbre;
+            const volumeFinal = volumeBrut * densite * humidite;
+
+            const steres = volumeFinal / 0.75;
+
+            document.getElementById("resultatChauffage").innerHTML = `
+                <p>Volume brut : ${volumeBrut.toFixed(2)} m³</p>
+                <p>Volume final (ajusté densité & humidité) : ${volumeFinal.toFixed(2)} m³</p>
+                <p>Total en stères : ${steres.toFixed(2)} stères</p>
             `;
         }
     </script>
