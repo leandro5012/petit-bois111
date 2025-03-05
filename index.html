@@ -143,15 +143,25 @@
                 (Math.pow(diametreBas / 2, 2) + Math.pow(diametreHaut / 2, 2) + 
                  (diametreBas / 2) * (diametreHaut / 2));
 
-            document.getElementById("resultatVente").innerHTML = `Volume bille : ${volumeBille.toFixed(2)} m³`;
+            const steresBille = volumeBille / 0.75;
+
+            document.getElementById("resultatVente").innerHTML = `
+                <p>Volume de la bille : ${volumeBille.toFixed(2)} m³</p>
+                <p>Stères de la bille : ${steresBille.toFixed(2)} stères</p>
+            `;
         }
 
         function calculerChauffage() {
             const hauteur = parseFloat(document.getElementById("hauteurArbre").value);
             const diametre = parseFloat(document.getElementById("diametreArbre").value) / 100;
+
             const volume = Math.PI * Math.pow(diametre / 2, 2) * hauteur;
-            
-            document.getElementById("resultatChauffage").innerHTML = `Volume : ${volume.toFixed(2)} m³`;
+            const steres = volume / 0.75;
+
+            document.getElementById("resultatChauffage").innerHTML = `
+                <p>Volume de l'arbre : ${volume.toFixed(2)} m³</p>
+                <p>Stères : ${steres.toFixed(2)} stères</p>
+            `;
         }
     </script>
 
