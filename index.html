@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculer les stères de bois</title>
     <style>
-        /* Styles généraux */
         body { 
             font-family: Arial, sans-serif; 
             padding: 20px; 
@@ -37,15 +36,11 @@
             border: 1px solid #81c784;
         }
         label { color: #2e7d32; }
-        
-        /* Style du header */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        /* Cacher les sections non actives */
         .section {
             display: none;
         }
@@ -56,7 +51,6 @@
 </head>
 <body>
 
-    <!-- En-tête avec les boutons de navigation -->
     <header>
         <h1>Calculer les stères de bois</h1>
         <div>
@@ -65,10 +59,10 @@
         </div>
     </header>
 
-    <!-- Section Vente -->
+    <!-- Page Vente -->
     <div id="section-vente" class="section active">
         <h2>Calculer les stères pour la vente</h2>
-        
+
         <label for="hauteurBille">Hauteur de la bille (m) :</label>
         <input type="number" id="hauteurBille" placeholder="Hauteur en mètres" min="0" step="0.1" required>
 
@@ -81,21 +75,28 @@
         <label for="diametreMoyenBranchage">Diamètre moyen du branchage (cm) :</label>
         <input type="number" id="diametreMoyenBranchage" placeholder="Diamètre moyen en cm" min="0" step="0.1" required>
 
-        <label for="typeBois">Type de bois :</label>
-        <select id="typeBois" required>
-            <option value="0.75">Chêne</option>
-            <option value="0.72">Hêtre</option>
-            <option value="0.55">Pin</option>
-        </select>
-
-        <label for="humidite">Bois sec ou humide :</label>
-        <select id="humidite" required>
-            <option value="1">Sec</option>
-            <option value="1.2">Humide (ajoute 20%)</option>
-        </select>
-
-        <button onclick="calculerVolumeVente()">Calculer</button>
+        <button onclick="calculerVolume('resultatVente')">Calculer</button>
         <div class="result" id="resultatVente"></div>
+    </div>
+
+    <!-- Page Chauffage -->
+    <div id="section-chauffage" class="section">
+        <h2>Calculer les stères pour le chauffage</h2>
+
+        <label for="hauteurBilleChauffage">Hauteur de la bille (m) :</label>
+        <input type="number" id="hauteurBilleChauffage" placeholder="Hauteur en mètres" min="0" step="0.1" required>
+
+        <label for="diametreBasChauffage">Diamètre en bas de la bille (cm) :</label>
+        <input type="number" id="diametreBasChauffage" placeholder="Diamètre en cm" min="0" step="0.1" required>
+
+        <label for="hauteurBranchageChauffage">Hauteur du branchage (m) :</label>
+        <input type="number" id="hauteurBranchageChauffage" placeholder="Hauteur en mètres" min="0" step="0.1" required>
+
+        <label for="diametreMoyenBranchageChauffage">Diamètre moyen du branchage (cm) :</label>
+        <input type="number" id="diametreMoyenBranchageChauffage" placeholder="Diamètre moyen en cm" min="0" step="0.1" required>
+
+        <button onclick="calculerVolume('resultatChauffage')">Calculer</button>
+        <div class="result" id="resultatChauffage"></div>
     </div>
 
     <script>
@@ -104,30 +105,25 @@
             document.getElementById('section-' + section).classList.add('active');
         }
 
-        function calculerVolumeVente() {
+        function calculerVolume(resultatID) {
             const hauteurBille = parseFloat(document.getElementById("hauteurBille").value);
             const diametreBas = parseFloat(document.getElementById("diametreBas").value) / 100;
 
             const hauteurBranchage = parseFloat(document.getElementById("hauteurBranchage").value);
             const diametreMoyenBranchage = parseFloat(document.getElementById("diametreMoyenBranchage").value) / 100;
 
-            const densite = parseFloat(document.getElementById("typeBois").value);
-            const humidite = parseFloat(document.getElementById("humidite").value);
-
             const volumeBille = Math.PI * Math.pow(diametreBas / 2, 2) * hauteurBille;
-
             const volumeBranchage = (1 / 3) * Math.PI * Math.pow(diametreMoyenBranchage / 2, 2) * hauteurBranchage;
 
-            const volumeBilleFinal = volumeBille * densite * humidite;
-            const volumeBranchageFinal = volumeBranchage * densite * humidite;
+            const steresBille = volumeBille / 0.75;
+            const steresBranchage = volumeBranchage / 0.75;
 
-            const steresBille = volumeBilleFinal / 0.75;
-            const steresBranchage = volumeBranchageFinal / 0.75;
-
-            document.getElementById("resultatVente").innerHTML = `
-                <p>Volume bille : ${volumeBille.toFixed(2)} m³ (${steresBille.toFixed(2)} stères)</p>
-                <p>Volume branchage : ${volumeBranchage.toFixed(2)} m³ (${steresBranchage.toFixed(2)} stères)</p>
-                <p>Volume total : ${(volumeBilleFinal + volumeBranchageFinal).toFixed(2)} m³</p>
+            document.getElementById(resultatID).innerHTML = `
+                <p>Volume brut : ${(volumeBille + volumeBranchage).toFixed(2)} m³</p>
+                <p>Volume de la bille : ${volumeBille.toFixed(2)} m³</p>
+                <p>Stères de la bille : ${steresBille.toFixed(2)} stères</p>
+                <p>Volume du branchage : ${volumeBranchage.toFixed(2)} m³</p>
+                <p>Stères du branchage : ${steresBranchage.toFixed(2)} stères</p>
                 <p>Total en stères : ${(steresBille + steresBranchage).toFixed(2)} stères</p>
             `;
         }
